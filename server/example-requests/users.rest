@@ -1,9 +1,9 @@
 ### Get all users
-GET http://localhost:4000/users
+GET http://localhost:4000/users HTTP/1.1
 Content-Type: application/json
 
 ### Register new user
-POST http://localhost:4000/users
+POST http://localhost:4000/users HTTP/1.1
 Content-Type: application/json
 
 {
@@ -11,16 +11,15 @@ Content-Type: application/json
 }
 
 ### Login
-POST http://localhost:4000/login
+POST http://localhost:4000/login HTTP/1.1
 Content-Type: application/json
 
 {
-    "name": "Joe",
-    "password": "secret"
+    "name": "Joe", "password": "secret"
 }
 
 ### Login failure
-POST http://localhost:4000/login
+POST http://localhost:4000/login HTTP/1.1
 Content-Type: application/json
 
 {
