@@ -1,6 +1,7 @@
 const express = require('express');
 const argon2 = require('argon2');
-const jsonwebtoken = require('jsonwebtoken');
+
+const Auth = require('./auth');
 
 const app = express();
 app.use(express.json())
@@ -31,12 +32,14 @@ app.post('/login', async (req, res) => {
     }
     try {
         if (await argon2.verify(user.passwordHash, password)) {
-            const jwt = jsonwebtoken.sign({userName: user.name}, 'reallyBadJwtSecret', { expiresIn: "10m" });
+            const jwt = Auth.getAuthToken(user);
+            res.cookie('refreshToken', Auth.getRefreshToken(user), { httpOnly: true });
             return res.status(200).send(jwt);
         } else {
             return res.status(401).send('Invalid username or password');
         }
     } catch (e) {
+        console.log(e)
         res.status(500).json(e);
     }
 });
