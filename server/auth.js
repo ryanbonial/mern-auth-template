@@ -1,11 +1,11 @@
 const jsonwebtoken = require('jsonwebtoken');
 
 const getAuthToken = function(user) {
-    return jsonwebtoken.sign({ userName: user.name }, 'reallyBadJwtSecret', { expiresIn: "10m" });
+    return jsonwebtoken.sign({ userName: user.name }, process.env.AUTH_TOKEN_SECRET, { expiresIn: "10m" });
 }
 
 const getRefreshToken = function(user) {
-    return jsonwebtoken.sign({ userName: user.name }, 'reallyBadRefreshSecret', { expiresIn: "7d" });
+    return jsonwebtoken.sign({ userName: user.name }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
 }
 
 module.exports = {
