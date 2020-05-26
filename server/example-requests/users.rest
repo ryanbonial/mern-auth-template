@@ -29,7 +29,7 @@ Content-Type: application/json
 ### Protected route
 GET http://localhost:4000/protected-ping HTTP/1.1
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6IkpvZSIsImlhdCI6MTU5MDUwNTA2MiwiZXhwIjoxNTkwNTA1NjYyfQ.os71UqoHj5FNCIpw-mJxCqF4EQ6Plwfn_yjtVukrEpo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Im5hbWUiOiJKb2UifSwiaWF0IjoxNTkwNTExMTU3LCJleHAiOjE1OTA1MTE3NTd9.Ihu6EFduhoYQfjUKkmQlcrMEYiT-Y6_E46nFAkiAJPo
 
 ### Protected route failure
 GET http://localhost:4000/protected-ping HTTP/1.1
@@ -38,4 +38,8 @@ Authorization: invalidAuthorizationToken
 
 ### Refreh token from cookie
 GET http://localhost:4000/refresh-login HTTP/1.1
+Content-Type: application/json
+
+### Logout
+POST http://localhost:4000/logout HTTP/1.1
 Content-Type: application/json

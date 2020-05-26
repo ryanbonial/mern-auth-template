@@ -23,7 +23,7 @@ app.post('/users', async (req, res) => {
     const { name, password } = req.body
     try {
         const passwordHash = await argon2.hash(password, 10);
-        users.push({ name, passwordHash });
+        users.push({ name, passwordHash, refreshBlacklist: [] });
         res.status(201).send();
     } catch {
         res.status(500).send();
@@ -50,9 +50,27 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/refresh-login', async (req, res) => {
+app.post('/logout', (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+    const refreshPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, { algorithms: ['HS256'] });
+    const user = users.find(user => user.name === refreshPayload.user.name && !user.refreshBlacklist.includes(refreshToken));
+    if (!user) {
+        // Should we really require a valid session to logout?
+        return res.status(401).send('Invalid token');
+    }
+    user.refreshBlacklist.push(refreshToken);
+    res.status(200).send();
+})
+
+app.get('/refresh-login', (req, res) => {
     try {
-        const refreshPayload = jwt.verify(req.cookies.refreshToken, process.env.REFRESH_TOKEN_SECRET, { algorithms: ['HS256'] });
+        const refreshToken = req.cookies.refreshToken;
+        const refreshPayload = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, { algorithms: ['HS256'] });
+        const user = users.find(user => user.name === refreshPayload.user.name && !user.refreshBlacklist.includes(refreshToken));
+        if (!user) {
+            return res.status(401).send('Invalid refresh token');
+        }
+        user.refreshBlacklist.push(refreshToken);
         const newAuthToken = authToken.getAuthToken(refreshPayload.user);
         res.cookie('refreshToken', authToken.getRefreshToken(refreshPayload.user), { httpOnly: true });
         return res.status(200).send(newAuthToken);
