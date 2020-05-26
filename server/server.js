@@ -1,12 +1,15 @@
 require('dotenv').config();
 const express = require('express');
+const cookieParser = require('cookie-parser')
 const argon2 = require('argon2');
+const jwt = require('jsonwebtoken');
 
 const authToken = require('./auth/authToken');
 const authGuard = require('./auth/authGuard');
 
 const app = express();
-app.use(express.json())
+app.use(express.json());
+app.use(cookieParser());
 const users = [];
 
 app.get('/ping', (req, res) => res.send('pong'));
@@ -16,7 +19,7 @@ app.get('/users', (req, res) => {
     res.json(users);
 });
 
-app.post('/users',  async (req, res) => {
+app.post('/users', async (req, res) => {
     const { name, password } = req.body
     try {
         const passwordHash = await argon2.hash(password, 10);
@@ -47,5 +50,16 @@ app.post('/login', async (req, res) => {
     }
 });
 
-console.log('Server listening on http://localhost:4000/ping')
+app.get('/refresh-login', async (req, res) => {
+    try {
+        const refreshPayload = jwt.verify(req.cookies.refreshToken, process.env.REFRESH_TOKEN_SECRET, { algorithms: ['HS256'] });
+        const newAuthToken = authToken.getAuthToken(refreshPayload.user);
+        res.cookie('refreshToken', authToken.getRefreshToken(refreshPayload.user), { httpOnly: true });
+        return res.status(200).send(newAuthToken);
+    } catch {
+        return res.status(401).send('Invalid refresh token');
+    }
+});
+
+console.log('🙉 Server listening on http://localhost:4000/ping')
 app.listen(4000);
