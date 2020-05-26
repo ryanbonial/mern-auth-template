@@ -1,5 +1,7 @@
 import React from 'react';
 
+import PageContent from '../PageContent';
+
 export default function RegisterUser() {
-  return <div>Register page</div>
+  return <PageContent>Register page</PageContent>
 }
