@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
-const cookieParser = require('cookie-parser')
+const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
 
@@ -9,6 +10,7 @@ const authGuard = require('./auth/authGuard');
 
 const app = express();
 app.use(express.json());
+app.use(cors()); // TODO: lock down this CORS
 app.use(cookieParser());
 const users = [];
 
@@ -20,7 +22,7 @@ app.get('/users', (req, res) => {
 });
 
 app.post('/users', async (req, res) => {
-    const { name, password } = req.body
+    const { name, password } = req.body;
     try {
         const passwordHash = await argon2.hash(password, 10);
         users.push({ name, passwordHash, refreshBlacklist: [] });
@@ -28,7 +30,7 @@ app.post('/users', async (req, res) => {
     } catch {
         res.status(500).send();
     }
-})
+});
 
 app.post('/login', async (req, res) => {
     const { name, password } = req.body;
@@ -45,7 +47,7 @@ app.post('/login', async (req, res) => {
             return res.status(401).send('Invalid username or password');
         }
     } catch (e) {
-        console.log(e)
+        console.log(e);
         res.status(500).json(e);
     }
 });
@@ -60,7 +62,7 @@ app.post('/logout', (req, res) => {
     }
     user.refreshBlacklist.push(refreshPayload.jti);
     res.status(200).send();
-})
+});
 
 app.get('/refresh-login', (req, res) => {
     try {
@@ -79,5 +81,5 @@ app.get('/refresh-login', (req, res) => {
     }
 });
 
-console.log('🙉 Server listening on http://localhost:4000/ping')
+console.log('🙉 Server listening on http://localhost:4000/ping');
 app.listen(4000);
