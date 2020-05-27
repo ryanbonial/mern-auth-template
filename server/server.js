@@ -42,7 +42,7 @@ app.post('/login', async (req, res) => {
         if (await argon2.verify(user.passwordHash, password)) {
             const jwt = authToken.getAuthToken(user);
             res.cookie('refreshToken', authToken.getRefreshToken(user), { httpOnly: true });
-            return res.status(200).send(jwt);
+            return res.status(200).send({ token: jwt });
         } else {
             return res.status(401).send('Invalid username or password');
         }
