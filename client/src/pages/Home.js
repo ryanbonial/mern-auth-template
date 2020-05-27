@@ -6,9 +6,9 @@ import PageContent from '../PageContent';
 export default function Home() {
   return (
     <>
-      <div class="hero">
-        <div class="hero-content">
-          <h1 class="hero-heading">Hero Heading</h1>
+      <div className="hero">
+        <div className="hero-content">
+          <h1 className="hero-heading">Hero Heading</h1>
           <p>Hero subtext goes here</p>
         </div>
       </div>
