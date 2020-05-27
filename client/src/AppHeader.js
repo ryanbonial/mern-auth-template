@@ -15,6 +15,7 @@ export default function AppHeader() {
       </Link>
       <nav>
         <ul>
+          <li><Link to="/private">Private</Link></li>
           <li><Link to="/register">Register</Link></li>
           <li><Link to="/login">Log In</Link></li>
         </ul>

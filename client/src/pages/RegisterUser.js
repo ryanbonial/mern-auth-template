@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import PageContent from '../PageContent';
 
-export default function RegisterUser({history}) {
+export default function RegisterUser() {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
 
   const onRegisterSubmit = async e => {
     e.preventDefault();
@@ -14,7 +16,7 @@ export default function RegisterUser({history}) {
       body: JSON.stringify({ name: userName, password }),
     });
     console.log(regResp);
-    history.push('/');
+    history.push('/login');
   };
 
   return (

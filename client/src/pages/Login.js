@@ -1,24 +1,28 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import PageContent from '../PageContent';
+import { setAuthToken } from '../authToken';
 
-export default function Login({ history }) {
+export default function Login() {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const history = useHistory();
 
   const onLoginSubmit = async e => {
     e.preventDefault();
     setErrorMsg('');
-    const regResp = await fetch('http://localhost:4000/login', {
+    const loginResp = await fetch('http://localhost:4000/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: JSON.stringify({ name: userName, password }),
     });
-    console.log(regResp);
-    if (regResp.ok) {
-      history.push('/');
+    if (loginResp.ok) {
+      const login = await loginResp.json();
+      setAuthToken(login.token);
+      history.push('/private');
     } else {
       setErrorMsg('Invalid username or password')
     }
