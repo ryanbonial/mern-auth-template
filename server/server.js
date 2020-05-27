@@ -10,7 +10,7 @@ const authGuard = require('./auth/authGuard');
 
 const app = express();
 app.use(express.json());
-app.use(cors()); // TODO: lock down this CORS
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(cookieParser());
 const users = [];
 

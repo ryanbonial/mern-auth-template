@@ -13,6 +13,7 @@ export default function Login({ history }) {
     const regResp = await fetch('http://localhost:4000/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
       body: JSON.stringify({ name: userName, password }),
     });
     console.log(regResp);
