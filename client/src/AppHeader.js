@@ -3,8 +3,23 @@ import { Link } from 'react-router-dom';
 
 import './AppHeader.css';
 import logo from './logo.svg'
+import { getAuthToken } from './authToken';
 
 export default function AppHeader() {
+  const token = getAuthToken(); // TODO: this isn't right, it isn't dynamic
+
+  const getNavLinks = () => {
+    if (token) {
+      return (<li><Link to="/private">Private</Link></li>);
+    }
+    return (
+      <>
+        <li><Link to="/register">Register</Link></li>
+        <li><Link to="/login">Log In</Link></li>
+      </>
+    );
+  }
+
   return (
     <header>
       <Link to="/">
@@ -15,9 +30,7 @@ export default function AppHeader() {
       </Link>
       <nav>
         <ul>
-          <li><Link to="/private">Private</Link></li>
-          <li><Link to="/register">Register</Link></li>
-          <li><Link to="/login">Log In</Link></li>
+          {getNavLinks()}
         </ul>
       </nav>
     </header>

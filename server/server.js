@@ -10,7 +10,7 @@ const authGuard = require('./auth/authGuard');
 
 const app = express();
 app.use(express.json());
-app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
+app.use(cors({ credentials: true, maxAge: 200, origin: 'http://localhost:3000' }));
 app.use(cookieParser());
 const users = [];
 
@@ -75,7 +75,7 @@ app.get('/refresh-login', (req, res) => {
         user.refreshBlacklist.push(refreshPayload.jti);
         const newAuthToken = authToken.getAuthToken(refreshPayload.user);
         res.cookie('refreshToken', authToken.getRefreshToken(refreshPayload.user), { httpOnly: true });
-        return res.status(200).send(newAuthToken);
+        return res.status(200).send({ token: newAuthToken });
     } catch {
         return res.status(401).send('Invalid refresh token');
     }
