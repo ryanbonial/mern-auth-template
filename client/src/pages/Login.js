@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import PageContent from '../PageContent';
-import { setAuthToken } from '../authToken';
+import { AuthContext } from '../context/AuthContext';
 
 export default function Login() {
+  const authContext = useContext(AuthContext);
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -21,7 +22,8 @@ export default function Login() {
     });
     if (loginResp.ok) {
       const login = await loginResp.json();
-      setAuthToken(login.token);
+      authContext.setAuthState({token: login.token});
+
       history.push('/private');
     } else {
       setErrorMsg('Invalid username or password')

@@ -1,12 +1,31 @@
-import React from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import './AppHeader.css';
 import logo from './logo.svg'
-import { getAuthToken } from './authToken';
+import { AuthContext } from './context/AuthContext';
 
 export default function AppHeader() {
-  const token = getAuthToken(); // TODO: this isn't right, it isn't dynamic
+  const authContext = useContext(AuthContext);
+  const [token, setToken] = useState('');
+
+  useEffect(() => {
+    if (authContext.authState.token === null) {
+      fetch('http://localhost:4000/refresh-login', { credentials: 'include' })
+        .then(resp => resp.json())
+        .then(refreshResp => {
+          authContext.setAuthState({ token: refreshResp.token });
+          setToken(refreshResp.token);
+        }).catch(err => {
+          authContext.setAuthState({ token: '' });
+          console.log(err);
+          if (window.location.pathname !== '/login' && window.location.pathname !== '/register')
+            window.location.href = '/login';
+        });
+    } else {
+      setToken(authContext.authState.token);
+    }
+  }, [authContext, token]);
 
   const getNavLinks = () => {
     if (token) {

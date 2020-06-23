@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
-import { getAuthToken } from './authToken';
+import { AuthContext } from './context/AuthContext';
 
 export default function PrivateRoute({ children, ...rest }) {
-  const isAuthorized = () => getAuthToken();
+  const authContext = useContext(AuthContext);
   return (
     <Route
       {...rest}
       render={({ location }) =>
-        isAuthorized() ? (
+        authContext.authState.token ? (
           children
         ) : (
             <Redirect
